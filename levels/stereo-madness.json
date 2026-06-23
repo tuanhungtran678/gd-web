@@ -1,0 +1,16 @@
+{
+  "name": "Stereo Madness",
+  "length": 2000,
+  "objects": [
+    {
+      "type": "spike",
+      "x": 500,
+      "y": 300
+    },
+    {
+      "type": "spike",
+      "x": 800,
+      "y": 300
+    }
+  ]
+}

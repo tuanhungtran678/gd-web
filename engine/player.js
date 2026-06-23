@@ -2,26 +2,36 @@ export default class Player {
 
     constructor() {
 
+        // Position
         this.x = 100;
         this.y = 300;
 
+        // Size
         this.width = 40;
         this.height = 40;
 
+        // Movement
+        this.speed = 5;
         this.velY = 0;
 
-        this.rotation = 0;
-        this.rotationSpeed = 6;
+        // Physics
+        this.gravity = 0.6;
+        this.jumpForce = -12;
 
+        // State
         this.onGround = true;
         this.dead = false;
+
+        // Rotation
+        this.rotation = 0;
+        this.rotationSpeed = 6;
     }
 
     jump() {
 
         if (this.onGround) {
 
-            this.velY = -12;
+            this.velY = this.jumpForce;
             this.onGround = false;
 
         }
@@ -30,11 +40,14 @@ export default class Player {
 
     update() {
 
+        // Auto-run
+        this.x += this.speed;
+
         // Gravity
-        this.velY += 0.6;
+        this.velY += this.gravity;
         this.y += this.velY;
 
-        // Rotation
+        // Rotate while airborne
         if (!this.onGround) {
             this.rotation += this.rotationSpeed;
         }
@@ -53,9 +66,20 @@ export default class Player {
             }
 
             this.onGround = true;
-
         }
+    }
 
+    respawn() {
+
+        this.x = 100;
+        this.y = 300;
+
+        this.velY = 0;
+
+        this.rotation = 0;
+
+        this.dead = false;
+        this.onGround = true;
     }
 
     draw(ctx) {
@@ -81,7 +105,5 @@ export default class Player {
         );
 
         ctx.restore();
-
     }
-
 }

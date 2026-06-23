@@ -4,49 +4,56 @@ export default class Level {
 
     constructor() {
 
-        this.spikes = [
-            new Spike(500, 300),
-            new Spike(800, 300),
-            new Spike(1100, 300)
-        ];
+        this.name = "";
+        this.length = 3000;
 
+        this.objects = [];
+        this.spikes = [];
     }
 
-    update(player) {
+    async load(url) {
 
-        // check collision
-        for (let spike of this.spikes) {
+        const res = await fetch(url);
+        const data = await res.json();
 
-            if (
-                player.x < spike.x + spike.width &&
-                player.x + player.width > spike.x &&
-                player.y < spike.y + spike.height &&
-                player.y + player.height > spike.y
-            ) {
-                player.dead = true;
+        this.name = data.name;
+        this.length = data.length;
+
+        this.objects = data.objects;
+
+        this.spikes = [];
+
+        for (const obj of this.objects) {
+
+            switch(obj.type) {
+
+                case "spike":
+
+                    this.spikes.push(
+                        new Spike(
+                            obj.x,
+                            obj.y
+                        )
+                    );
+
+                    break;
             }
-
         }
-
-        // respawn
-        if (player.dead) {
-
-            player.x = 100;
-            player.y = 300;
-            player.velY = 0;
-            player.rotation = 0;
-
-            player.dead = false;
-        }
-
     }
 
     draw(ctx) {
 
-        for (let spike of this.spikes) {
+        ctx.fillStyle = "#444";
+
+        ctx.fillRect(
+            0,
+            340,
+            this.length,
+            300
+        );
+
+        for (const spike of this.spikes) {
             spike.draw(ctx);
         }
-
     }
-
 }

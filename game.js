@@ -16,6 +16,10 @@ const player = new Player();
 const camera = new Camera();
 const level = new Level();
 
+await level.load(
+    "./levels/stereo-madness.json"
+);
+
 document.addEventListener("keydown", e => {
     if (e.code === "Space") {
         player.jump();
@@ -31,7 +35,32 @@ function loop() {
     // update
     player.update();
     camera.update(player);
-    level.update(player);
+    
+    const progress = Math.min(
+        100,
+        Math.floor(player.x / level.length * 100)
+    );
+
+for (const spike of level.spikes) {
+
+    if (
+        player.x < spike.x + spike.width &&
+        player.x + player.width > spike.x &&
+        player.y < spike.y + spike.height &&
+        player.y + player.height > spike.y
+    ) {
+
+        player.dead = true;
+
+    }
+
+}
+
+if (player.dead) {
+
+    player.respawn();
+
+}
 
     // camera transform
     ctx.save();
@@ -46,8 +75,11 @@ function loop() {
 
     // draw player
     player.draw(ctx);
+    // UI (không bị camera kéo theo)
+    ctx.fillStyle = "white";
+    ctx.font = "24px Arial";
+    ctx.fillText(progress + "%", 20, 40);
 
     ctx.restore();
 }
-
 loop();
